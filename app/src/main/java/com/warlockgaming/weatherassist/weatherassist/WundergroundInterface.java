@@ -1,6 +1,8 @@
 package com.warlockgaming.weatherassist.weatherassist;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
@@ -14,18 +16,22 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Iterator;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by nickr on 7/19/2017.
  */
 
-public class WundergroundInterface {
+public class WundergroundInterface{
     private Activity activity;
     private JSONObject jsonObject;
-    private double rainThreshold = 40.0;
-    private double hours = 12.0;
+    private double rainThreshold = 50.0;
+    private double hours = 8.0;
 
-    public WundergroundInterface(Activity activity) {
+    public WundergroundInterface(Activity activity, double rainThreshold, double hours) {
         this.activity = activity;
+        this.hours = hours;
+        this.rainThreshold = rainThreshold;
     }
 
     public boolean getInfoLatLng(Double[] location) {
@@ -52,11 +58,14 @@ public class WundergroundInterface {
             Log.d("WeatherAssist", "Under Threshold");
         }
 
+        Log.d("WeatherAssist", "Threshold = " + rainThreshold);
+        Log.d("WeatherAssist", "Hours = " + hours);
+        Log.d("WeatherAssist", "Rain Amount = " + rainAmount);
         Log.d("WeatherAssist", "Complete");
         return overThreshold;
     }
 
-    public double readMessage(double hours)
+    private double readMessage(double hours)
     {
         String response = "";
         Double precipitation = 0.0;

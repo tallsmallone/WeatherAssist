@@ -71,6 +71,7 @@
                 android:id="@+id/main_ad"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fab_margin"
                 android:layout_gravity="bottom"
                 app:adSize="@string/adSize"
                 app:adUnitId="@string/test_admob_key" />

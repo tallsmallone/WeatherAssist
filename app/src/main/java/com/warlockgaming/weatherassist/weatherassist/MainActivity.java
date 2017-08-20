@@ -2,6 +2,8 @@ package com.warlockgaming.weatherassist.weatherassist;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -11,6 +13,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView rainTextView;
     private ImageView imageView;
     private SupportMapFragment mapView;
+    private Button settingsButton;
 
     private WundergroundInterface wInterface;
 
@@ -49,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        double rainThreshold = 50.0;
+        double hours = 8.0;
 
         Log.d("WeatherAssist", "Started");
 
@@ -59,11 +66,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
+        // preferences
+        SharedPreferences prefs = getSharedPreferences("settings", Context.MODE_PRIVATE);
+
+        rainThreshold = (double)prefs.getFloat("rainThreshold", 50.0f);
+        hours = (double)prefs.getFloat("hours", 8.0f);
+
         // set image view
         imageView = (ImageView)findViewById(R.id.weather_image);
 
         // add other text view
         rainTextView = (TextView)findViewById(R.id.rain_text);
+
+        // add button
+        settingsButton = (Button)findViewById(R.id.settings_button);
 
         // set location stuff
         locationTextView = (TextView)findViewById(R.id.location_title);
@@ -84,13 +100,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView.getMapAsync(this);
 
         // Wunderground interface
-        wInterface = new WundergroundInterface(this);
+        wInterface = new WundergroundInterface(this, rainThreshold, hours);
         boolean overThreshold = wInterface.getInfoLatLng(new Double[] {lat, lon} );
 
         if(!overThreshold) {
             rainTextView.setText("It will not rain");
             imageView .setImageResource(R.drawable.sun_small);
         }
+
+        // add button task
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                settingsButtonClicked();
+            }
+        });
+    }
+
+    public void settingsButtonClicked() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     // onMapReady

@@ -3,4 +3,10 @@
     <string name="action_settings">Settings</string>
     <string name="location_title">Location</string>
     <string name="adSize">BANNER</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="settings_threshold">% Chance Threshold (0.0-100.0)</string>
+    <string name="settings_threshold_default">0.0</string>
+    <string name="settings_hours">Hours:</string>
+    <string name="settings_hours_default">8.0</string>
+    <string name="setting_main_button">Main Menu</string>
 </resources>
