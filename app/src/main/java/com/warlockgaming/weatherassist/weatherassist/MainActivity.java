@@ -1,6 +1,7 @@
 package com.warlockgaming.weatherassist.weatherassist;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.d("WeatherAssist", "Started");
 
         // Add ads
-        MobileAds.initialize(this, getString(R.string.test_admob_key));
+        MobileAds.initialize(this, getString(R.string.admob_app_id));
 
         mAdView = (AdView)findViewById(R.id.main_ad);
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -188,6 +189,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         }
+
+        recreate();
 
         return;
     }

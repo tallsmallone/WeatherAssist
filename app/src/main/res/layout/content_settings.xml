@@ -27,47 +27,67 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="0.15">
 
             <TextView
                 android:id="@+id/settings_threshold"
-                android:layout_width="wrap_content"
-                android:layout_height="29dp"
-                android:layout_weight="0.5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
                 android:text="@string/settings_threshold" />
 
             <EditText
                 android:id="@+id/settings_edit_threshold"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.2"
                 android:inputType="numberDecimal"
                 android:text="@string/settings_threshold_default" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="0.15">
 
             <TextView
                 android:id="@+id/settings_hours"
-                android:layout_width="wrap_content"
-                android:layout_height="29dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:text="@string/settings_hours"
-                android:layout_weight="0.5"/>
+                android:layout_weight="0.8"
+                />
 
             <EditText
                 android:id="@+id/settings_edit_hours"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
-                android:text="@string/settings_hours_default" />
+                android:text="@string/settings_hours_default"
+                android:layout_weight="0.2"/>
         </LinearLayout>
 
         <Button
             android:id="@+id/settings_return"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="0.15"
             android:text="@string/setting_main_button" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.75"/>
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/main_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/fab_margin"
+            android:layout_gravity="bottom"
+            app:adSize="@string/adSize"
+            app:adUnitId="@string/admob_key_settings" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

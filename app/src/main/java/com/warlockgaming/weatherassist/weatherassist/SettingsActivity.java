@@ -13,12 +13,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+
 public class SettingsActivity extends AppCompatActivity {
     private SharedPreferences prefs;
 
     private Button returnButton;
     private EditText thresholdEdit;
     private EditText hourEdit;
+    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +31,11 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Add ads
+        mAdView = (AdView)findViewById(R.id.main_ad);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         // preferences to save and read initials
         prefs = getSharedPreferences("settings", Context.MODE_PRIVATE);
