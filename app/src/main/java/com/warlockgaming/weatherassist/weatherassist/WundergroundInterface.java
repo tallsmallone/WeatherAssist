@@ -116,8 +116,7 @@ public class WundergroundInterface{
             StringBuilder builder = new StringBuilder();
             StringBuilder jsonBuilder = new StringBuilder();
             String json;
-            builder.append("http://api.wunderground.com/api/87599b3b7dbd4302/forecast");
-            builder.append("/q/");
+            builder.append("https://weather-assist-177801.appspot.com/query/");
             builder.append(zip);
             builder.append(".json");
 
@@ -171,8 +170,7 @@ public class WundergroundInterface{
             StringBuilder builder = new StringBuilder();
             StringBuilder jsonBuilder = new StringBuilder();
             String json;
-            builder.append("http://api.wunderground.com/api/87599b3b7dbd4302/hourly");
-            builder.append("/q/");
+            builder.append("https://weather-assist-177801.appspot.com/query/");
             builder.append(Double.toString(lat));
             builder.append(",");
             builder.append(Double.toString(lon));
