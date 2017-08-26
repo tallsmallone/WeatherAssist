@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,12 +40,48 @@ public class WundergroundInterface{
         double rainAmount = 0.0;
         boolean overThreshold;
         Log.d("WeatherAssist", "Calling Task");
-        GetInfoFromLatLng getInfo = new GetInfoFromLatLng();
+        GetInfo getInfo = new GetInfo();
 
-        Double[] input = new Double[] {location[0], location[1], hours};
+        String[] input = new String[] {Double.toString(location[0]) + "," +
+                Double.toString(location[1]), Double.toString(hours)};
 
         try {
-            //getInfo.execute(input);
+            rainAmount = getInfo.execute(input).get();
+        } catch (Exception e) {
+            Log.d("WeatherAssist", "Error getting information, exception: " + e.toString());
+        }
+
+        if(rainAmount >= rainThreshold) {
+            overThreshold = true;
+            Log.d("WeatherAssist", "Above Threshold");
+        }
+        else if(rainAmount == -1) {
+            Log.d("WeatherAssist", "Server sent -1");
+            Toast.makeText(activity, "Error reading from server...", Toast.LENGTH_SHORT);
+            Toast.makeText(activity, "Please try again later", Toast.LENGTH_LONG);
+            overThreshold = false;
+        }
+        else {
+            overThreshold = false;
+            Log.d("WeatherAssist", "Under Threshold");
+        }
+
+        Log.d("WeatherAssist", "Threshold = " + rainThreshold);
+        Log.d("WeatherAssist", "Hours = " + hours);
+        Log.d("WeatherAssist", "Rain Amount = " + rainAmount);
+        Log.d("WeatherAssist", "Complete");
+        return overThreshold;
+    }
+
+    public boolean getInfoZip(String zip) {
+        double rainAmount = 0.0;
+        boolean overThreshold;
+        Log.d("WeatherAssist", "Calling Task");
+        GetInfo getInfo = new GetInfo();
+
+        String[] input = new String[] {zip, Double.toString(hours)};
+
+        try {
             rainAmount = getInfo.execute(input).get();
         } catch (Exception e) {
             Log.d("WeatherAssist", "Error getting information, exception: " + e.toString());
@@ -104,77 +142,21 @@ public class WundergroundInterface{
         }
     }
 
-    private class GetInfoFromZip extends AsyncTask<String, Void, Double> {
+    private class GetInfo extends AsyncTask<String[], Void, Double> {
         @Override
-        protected Double doInBackground(String... zip) {
-            query(zip[0]);
-            return readMessage(Double.parseDouble(zip[1]));
+        protected Double doInBackground(String[]... params) {
+
+            query(params[0][0]);
+
+            return readMessage(Double.parseDouble(params[0][1]));
         }
 
-        public void query(String zip)
-        {
+        public void query(String input) {
             StringBuilder builder = new StringBuilder();
             StringBuilder jsonBuilder = new StringBuilder();
             String json;
             builder.append("https://weather-assist-177801.appspot.com/query/");
-            builder.append(zip);
-            builder.append(".json");
-
-            String url = builder.toString();
-
-            try {
-                URL request_url = new URL(url);
-                HttpURLConnection urlConnection = (HttpURLConnection) request_url.openConnection();
-                InputStream in = urlConnection.getInputStream();
-                InputStreamReader in_reader = new InputStreamReader(in);
-
-                if(in_reader != null) {
-                    BufferedReader br = new BufferedReader(in_reader);
-                    String line;
-
-                    while((line = br.readLine()) != null) {
-                        jsonBuilder.append(line + "\n");
-                    }
-                    in.close();
-                    json = jsonBuilder.toString();
-
-                    try {
-                        jsonObject = new JSONObject(json);
-                    } catch (JSONException e) {
-                        Log.d("WeatherAssist", "Error parsing data: " + e.toString());
-                    }
-                }
-                else {
-                    jsonObject = null;
-                    Log.d("WeatherAssist", "JsonReader = null");
-                }
-
-
-            } catch (Exception e) {
-                Log.d("WeatherAssist", "Lat Long query Exception: " + e.toString());
-                jsonObject = null;
-            }
-        }
-    }
-
-    private class GetInfoFromLatLng extends AsyncTask<Double, Void, Double> {
-        @Override
-        protected Double doInBackground(Double... params) {
-
-            query(params[0], params[1]);
-
-            return readMessage(params[2]);
-        }
-
-        public void query(double lat, double lon) {
-            StringBuilder builder = new StringBuilder();
-            StringBuilder jsonBuilder = new StringBuilder();
-            String json;
-            builder.append("https://weather-assist-177801.appspot.com/query/");
-            builder.append(Double.toString(lat));
-            builder.append(",");
-            builder.append(Double.toString(lon));
-            builder.append(".json");
+            builder.append(input);
 
             String url = builder.toString();
             Log.d("WeatherAssist", "URL: " + url);
@@ -194,6 +176,11 @@ public class WundergroundInterface{
                     }
                     in.close();
                     json = jsonBuilder.toString();
+
+                    if (json.equals("No location specified") || json.equals("Too many calls") ||
+                            json.equals("Error getting page")) {
+                        jsonObject = null;
+                    }
 
                     try {
                         jsonObject = new JSONObject(json);
